@@ -1,36 +1,32 @@
-<?php 
- require_once "user.php";
-require_once "teacher.php";
+<?php
+
+require_once "user.php";
+
+
 $username = "root";
 $password = "";
-$db = "tfa";
+$db = "tfa1";
 $servername = "localhost";
 
 $pdo = new PDO("mysql:host=$servername;dbname=$db", $username, $password);
 
-function getAllUser(){
-    global $pdo;
-    $statement = $pdo->prepare("SELECT * FROM users");
-    $statement -> execute();
-    $result = $statement->fetchAll(PDO::FETCH_CLASS,"User");
-    return $result;
-}
 
-function getAllTeacher(){
+function addUser($first_name, $last_name, $contact_number, $email_address, $user_type, $password, $security_question, $security_answer) {
     global $pdo;
-    $statement = $pdo->prepare("SELECT * FROM teachers");
-    $statement -> execute();
-    $result = $statement->fetchAll(PDO::FETCH_CLASS,"Teacher");
-    return $result;
-}
-
-function getUserByEmail($email_address)
-{
-    global $pdo;
-    $statment = $pdo -> prepare('SELECT * FROM users WHERE email_address = ?');
-    $statment-> execute([$email_address]);
-    $result = $statment->fetchAll(PDO::FETCH_CLASS, 'User');
-    return $result; 
+        $statement = $pdo->prepare("INSERT INTO users (email_address, first_name, last_name, contact_number, user_type, password, security_question, security_answer) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+        
+        return $statement->execute([
+            $email_address, 
+            $first_name, 
+            $last_name, 
+            $contact_number, 
+            $user_type, 
+            $password, 
+            $security_question, 
+            $security_answer
+        ]);
+    
 }
 
 function loginUser($email_address, $password){
@@ -40,18 +36,47 @@ function loginUser($email_address, $password){
         $email_address,
         $password
     ]);
-   $result = $statement->fetchAll(PDO::FETCH_CLASS, 'User');
-   return $result;
+    $result = $statement->fetchAll(PDO::FETCH_CLASS, 'User');
+    return $result;
 }
 
-
-function addUser($first_name, $last_name, $contact_number, $email_address, $user_type, $password, $security_question, $security_answer) {
+function getUserByEmail($email_address)
+{
     global $pdo;
-    $statement = $pdo->prepare("INSERT INTO users (first_name, last_name, contact_number, email_address, user_type, password, security_question, security_answer) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-    return $statement->execute([
-        $first_name, $last_name, $contact_number, $email_address, $user_type, $password, $security_question, $security_answer
-    ]);
+    $statement = $pdo->prepare('SELECT * FROM users WHERE email_address = ?');
+    $statement->execute([$email_address]);
+    $result = $statement->fetchAll(PDO::FETCH_CLASS, 'User');
+    return $result; 
+}
+function addTeacher($email_address, $teacher_type = null) {
+    global $pdo;
+    $statement = $pdo->prepare("INSERT INTO teachers (email_address, teacher_type) VALUES (?, ?)");
+    return $statement->execute([$email_address, $teacher_type]);
 }
 
+function addStudent($email_address, $student_type = null) {
+    global $pdo;
+    $statement = $pdo->prepare("INSERT INTO students (email_address, student_type) VALUES (?, ?)");
+    return $statement->execute([$email_address, $student_type]);
+}
+
+function addParent($email_address, $parent_type = null) {
+    global $pdo;
+    $statement = $pdo->prepare("INSERT INTO parents (email_address, parent_type) VALUES (?, ?)");
+    return $statement->execute([$email_address, $parent_type]);
+}
+
+function linkStudentParent($student_email, $parent_email) {
+    global $pdo;
+    $statement = $pdo->prepare("INSERT INTO student_parent (student_email_address, parent_email_address) VALUES (?, ?)");
+    return $statement->execute([$student_email, $parent_email]);
+}
+
+function checkParentExists($email_address) {
+    global $pdo;
+    $statement = $pdo->prepare('SELECT * FROM parents WHERE email_address = ?');
+    $statement->execute([$email_address]);
+    $result = $statement->fetchAll(PDO::FETCH_CLASS, 'User');
+    return count($result) > 0;
+}
 ?>
