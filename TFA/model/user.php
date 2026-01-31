@@ -1,10 +1,12 @@
 <?php 
+
+
 class User{
-    private $user_id;
+    
+    private $email_address; 
     private $first_name;
     private $last_name;
     private $contact_number;
-    private $email_address;
     private $user_type;
     private $password;
     private $security_question;
@@ -17,5 +19,5 @@ class User{
     function __set($name, $value){
         $this->$name = $value;
     }
-
 }
+?>

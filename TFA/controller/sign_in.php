@@ -24,7 +24,7 @@ if (isset($_POST['submit'])) {
             $_SESSION['user_id'] = $user->user_id;
             
             // Redirect to success page
-            header("Location: ../view/success.php");
+            header("Location: ../controller/teacherlist.php");
             exit();
         } else {
             $error = "Invalid username or password.";
