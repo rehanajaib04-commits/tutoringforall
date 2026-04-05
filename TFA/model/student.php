@@ -1,7 +1,7 @@
 <?php 
-class ParentModel{
+class Student{
     private $email_address; 
-    private $parent_type; 
+    private $student_type; 
 
     function __get($name){
         return $this->$name;

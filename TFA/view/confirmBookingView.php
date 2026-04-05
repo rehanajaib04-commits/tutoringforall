@@ -3,27 +3,59 @@
 <head>
     <title>Booking Confirmation</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; text-align: center; padding: 50px; }
-        .message-box { border: 1px solid #ccc; padding: 30px; display: inline-block; border-radius: 8px; }
-        .success { color: green; }
-        .error { color: red; }
-        .btn { display: inline-block; margin-top: 20px; padding: 10px 20px; text-decoration: none; border: 1px solid #333; color: #333; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; background-color: #f9f9f9; color: #333; }
+        .navbar { display: flex; justify-content: space-between; align-items: center; padding: 15px 40px; border-bottom: 2px solid #333; background-color: #fff; }
+        .navbar .logo { font-size: 24px; font-weight: normal; text-decoration: none; color: #333; }
+        .nav-links a { text-decoration: none; color: #333; margin-left: 20px; font-size: 16px; padding: 8px 12px; border: 1px solid #ccc; border-radius: 4px; }
+        .nav-links a:hover { background-color: #f0f0f0; }
+        .nav-links span { margin-left: 20px; font-size: 14px; color: #555; }
+        .page-body { display: flex; align-items: center; justify-content: center; min-height: calc(100vh - 70px); }
+        .message-box { background-color: #fff; border: 1px solid #ccc; border-radius: 10px; padding: 50px 60px; text-align: center; max-width: 520px; width: 90%; box-shadow: 0 2px 10px rgba(0,0,0,0.07); }
+        .icon { font-size: 60px; margin-bottom: 15px; }
+        h1 { font-size: 28px; font-weight: normal; margin-bottom: 15px; }
+        .success h1 { color: #2e7d32; }
+        .error h1 { color: #c62828; }
+        p { font-size: 16px; color: #555; line-height: 1.6; margin-bottom: 30px; }
+        .btn-group { display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; }
+        .btn { display: inline-block; padding: 10px 22px; text-decoration: none; border: 2px solid #333; color: #333; border-radius: 5px; font-size: 15px; transition: all 0.2s ease; }
+        .btn:hover { background-color: #333; color: white; }
+        .btn-primary { background-color: #333; color: white; }
+        .btn-primary:hover { background-color: #555; }
     </style>
 </head>
 <body>
-
-    <div class="message-box">
-        <?php if ($success): ?>
-            <h1 class="success">Booking Confirmed!</h1>
-            <p>Your lesson for <strong><?= htmlspecialchars($date) ?></strong> at <strong><?= htmlspecialchars($time) ?></strong> has been scheduled.</p>
+<nav class="navbar">
+    <a href="teacherlist.php" class="logo">Home</a>
+    <div class="nav-links">
+        <?php if (isset($_SESSION['email_address'])): ?>
+            <span>Logged in as: <?= htmlspecialchars($_SESSION['email_address']) ?></span>
+            <a href="bookingspage.php">My Bookings</a>
+            <a href="logout.php">Sign Out</a>
         <?php else: ?>
-            <h1 class="error">Booking Failed</h1>
-            <p>We're sorry, that slot may have just been taken or is no longer available.</p>
+            <a href="sign_in.php">Sign In</a>
         <?php endif; ?>
-
-        <a href="bookingspage.php?teacher_id=<?= $teacher_id ?>" class="btn">Back to Availability</a>
-        <a href="dashboard.php" class="btn">Go to My Lessons</a>
     </div>
-
+</nav>
+<div class="page-body">
+    <div class="message-box <?= $success ? 'success' : 'error' ?>">
+        <?php if ($success): ?>
+            <div class="icon">&#10003;</div>
+            <h1>Booking Confirmed!</h1>
+            <p>Your weekly lesson on <strong><?= htmlspecialchars($date) ?></strong><br>at <strong><?= htmlspecialchars($time) ?></strong> has been booked.</p>
+            <div class="btn-group">
+                <a href="bookingspage.php" class="btn btn-primary">View My Bookings</a>
+                <a href="availability.php?teacher_email=<?= urlencode($teacher_email) ?>" class="btn">Back to Availability</a>
+            </div>
+        <?php else: ?>
+            <div class="icon">&#10007;</div>
+            <h1>Booking Failed</h1>
+            <p><?= htmlspecialchars($error_message ?: 'Sorry, that weekly slot is no longer available.') ?></p>
+            <div class="btn-group">
+                <a href="availability.php?teacher_email=<?= urlencode($teacher_email) ?>" class="btn btn-primary">Back to Availability</a>
+                <a href="teacherlist.php" class="btn">Find Another Teacher</a>
+            </div>
+        <?php endif; ?>
+    </div>
+</div>
 </body>
 </html>

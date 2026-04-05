@@ -2,33 +2,25 @@
 session_start();
 require_once "../model/user.php";
 require_once "../model/teacher.php";
-require_once "../model/bookings.php"; 
 require_once "../model/dataAccess.php";
 
-// Standardize on 'id' or 'teacher_id' - I'll use 'teacher_id' to match your logic
-$teacher_id = $_GET['teacher_id'] ?? $_GET['id'] ?? null; 
-
-$teacher = null;
-$raw_availability = [];
-
-if ($teacher_id) {
-    $teacher = getTeacherDetails($teacher_id);
-    $raw_availability = getTeacherAvailability($teacher_id);
+if (!isset($_SESSION['email_address'])) {
+    header("Location: sign_in.php?redirect=" . urlencode($_SERVER['REQUEST_URI']));
+    exit();
 }
 
-if (!$teacher) {
-    die("Teacher not found.");
+$userType = $_SESSION['user_type'] ?? '';
+if (!in_array($userType, ['student', 'parent'], true)) {
+    die("Only student or parent accounts can view booked lesson slots.");
 }
 
-$availability = [];
-if ($raw_availability) {
-    foreach ($raw_availability as $slot) {
-        // Use the object properties from the Booking class
-        $dateKey = date('l, jS F', strtotime($slot->date));
-        $timeValue = date('H:i', strtotime($slot->start_time));
-        $availability[$dateKey][] = $timeValue;
-    }
-}
+$session_email  = $_SESSION['email_address'];
+$booking_email  = resolveBookingEmail($session_email, $userType);
+$bookings       = $booking_email ? getCurrentBookingsForUser($booking_email) : [];
+$current_booking_count  = count($bookings);
+$booking_identity_label = $userType === 'parent' && $booking_email
+    ? 'Showing bookings for linked student: ' . $booking_email
+    : 'Showing bookings for: ' . $session_email;
 
 require_once "../view/bookingsView.php";
 ?>

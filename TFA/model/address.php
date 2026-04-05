@@ -1,7 +1,10 @@
 <?php 
-class ParentModel{
-    private $email_address; 
-    private $parent_type; 
+class Address{
+ private $postcode;
+ private $addressline1;
+ private $addressline2;
+private $town;
+ private $county;
 
     function __get($name){
         return $this->$name;

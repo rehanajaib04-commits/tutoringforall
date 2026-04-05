@@ -1,29 +1,84 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Sign Up</title>
+
 </head>
 <body>
-    <h2>Create an Account</h2>
-    
-    <?php if (isset($message) && $message): ?>
-        <p><strong><?= $message ?></strong></p>
-    <?php endif; ?>
 
-    <form method="post" action="../controller/signup.php">
-        <input type="text" name="first_name" placeholder="First Name" required><br>
-        <input type="text" name="last_name" placeholder="Last Name" required><br>
-        <input type="text" name="contact_number" placeholder="Contact Number"><br>
-        <input type="email" name="email_address" placeholder="Email Address" required><br>
+
+    <?php if(isset($error_message)) { echo "<p style='color:red'>$error_message</p>"; } ?>
+
+    <form action="signup.php" method="POST">
         
-        <input type="hidden" name="user_type" value="student">
+
+
+                 <div>
+            <label>studentFirst Name:</label>
+            <input type="text" name="student_first_name" required>
+        </div>
+
+        <div>
+            <label>studentLast Name:</label>
+            <input type="text" name="student_last_name" required>
+        </div>
         
-        <input type="password" name="password" placeholder="Password" required><br>
-        <input type="text" name="security_question" placeholder="Security Question"><br>
-        <input type="text" name="security_answer" placeholder="Security Answer"><br>
+        <div>
+            <label>StudentContact Number:</label>
+            <input type="text" name="student_contact_number">
+        </div>
+
+        <div>
+            <label>StudentEmail Address:</label>
+            <input type="email" name="student_email_address" required>
+        </div>
         
-        <button type="submit" name="signup">Sign Up</button>
+        
+        <div>
+            <label>First Name:</label>
+            <input type="text" name="first_name" required>
+        </div>
+
+        <div>
+            <label>Last Name:</label>
+            <input type="text" name="last_name" required>
+        </div>
+
+        <div>
+            <label>Contact Number:</label>
+            <input type="text" name="contact_number">
+        </div>
+
+        <div>
+            <label>Email Address:</label>
+            <input type="email" name="email_address" required>
+        </div>
+
+       
+
+        <div>
+            <label>Password:</label>
+            <input type="password" name="password" required>
+        </div>
+
+        <div>
+            <label>Security Question:</label>
+            <select name="security_question">
+                <option value="pet">What is the name of your first pet?</option>
+                <option value="city">What city were you born in?</option>
+                <option value="school">What was the name of your first school?</option>
+            </select>
+        </div>
+
+        <div>
+            <label>Security Answer:</label>
+            <input type="text" name="security_answer" required>
+        </div>
+
+        <br>
+        <button type="submit">Sign Up</button>
     </form>
-    <p>Already have an account? <a href="sign_in.php">Sign In</a></p>
+    
+    <br>
+    <a href="sign_in.php">Sign in</a>
 </body>
 </html>

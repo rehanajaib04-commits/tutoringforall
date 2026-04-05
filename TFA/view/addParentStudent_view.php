@@ -1,63 +1,129 @@
-<!doctype html> 
-    <head>
-        <title>Sign Up Details</title>  
-    </head>
-    <?php
-    ?>
-    <body>
-    <header>
-    <div class = "container">
-    <h1>Enter Guardain's Details</h1>
-    </div>
-    </header>
-    <br>
-    <form action= "addParentStudent.php" method="POST"> 
-    Parent's Email address*: <input type="text" name="parent_email_address" id="parent_email_address" required>
-    <br><br>
-    Parent's First name: <input type="text" name="parent_first_name" id="parent_first_name">
-    <br><br>
-    Parents's Last name: <input type = "text" name="parent_last_name" id="parent_last_name">
-    <br><br>
-    Parent's Contact number: <input type = "text" name="parent_contact_number" id="parent_contact_number">
-    <br><br>
-    <input type="hidden" name="parent_user_type"  id="parent_user_type" value="parent">
-    <br><br>
-    password*: <input type = "password" name="parent_password" id="parent_password" required>
-    <br><br>
-    Security Question: <input type = "text" name="parent_security_question" id="parent_security_question">
-    <br><br>
-    Security Answer: <input type = "text" name="parent_security_answer" id="parent_security_answer">
-    <br><br>
-     <select name="parent_type" id="parent_type" required>
-            <option value="Parent">Parent</option>
-            <option value="other">other</option>
-        </select><br>
-    
-    Student's Email address*: <input type="text" name="student_email_address" id="student_email_address" required>
-    <br><br>
-    Student's First name: <input type="text" name="student_first_name" id="student_first_name">
-    <br><br>
-    Student's Last name: <input type = "text" name="student_last_name" id="student_last_name">
-    <br><br>
-    Student's Contact number: <input type = "text" name="student_contact_number" id="student_contact_number">
-    <br><br>
-    <input type="hidden" name="student_user_type"  id="student_user_type" value="student">
-    <br><br>
-    password*: <input type = "password" name="student_password" id="student_password" required>
-    <br><br>
-    Security Question: <input type = "text" name="student_security_question" id="student_security_question">
-    <br><br>
-    Security Answer: <input type = "text" name="student_security_answer" id="student_security_answer">
-    <br><br>
-     <select name="student_type" id="student_type" required>
-            <option value="Undergraduate">Undergraduate</option>
-            <option value="Postgraduate">Postgraduate</option>
-        </select><br>
-    <br><br>
-    <input type="submit" name="submit" id="Submit" value="Submit">
+<!DOCTYPE html>
+<html>
+<head>
+
+</head>
+<body>
+
+
+    <?php if(isset($error_message)) { echo "<p style='color:red'>$error_message</p>"; } ?>
+
+    <form action="addParentStudent.php" method="POST">
+        
+
+        <Br>
+
+        <div>
+            <label>Parent Details:</label>
+        </div> 
+        
+        <Br>
+        
+        <div>
+            <label>First Name:</label>
+            <input type="text" name="first_name" required>
+        </div>
+
+        <div>
+            <label>Last Name:</label>
+            <input type="text" name="last_name" required>
+        </div>
+
+        <div>
+            <label>Address line 1:</label>
+            <input type="text" name="address_line1" required>
+        </div>
+
+        <div>
+            <label>Address line 2:</label>
+            <input type="text" name="address_line2" required>
+        </div>
+
+        <div>
+            <label>Town:</label>
+            <input type="text" name="town" required>
+        </div>
+
+        <div>
+            <label>County:</label>
+            <input type="text" name="county" required>
+        </div>
+
+        <div>
+            <label>Post Code:</label>
+            <input type="text" name="post_code" required>
+        </div>
+
+
+        <div>
+            <label>Contact Number:</label>
+            <input type="text" name="contact_number">
+        </div>
+
+        <div>
+            <label>Email Address:</label>
+            <input type="email" name="email_address" required>
+        </div>
+
+        <Br>
+
+        <div>
+            <label>Password:</label>
+            <input type="password" name="password" required>
+        </div>
+
+        <div>
+            <label>Security Question:</label>
+            <select name="security_question">
+                <option value="pet">What is the name of your first pet?</option>
+                <option value="city">What city were you born in?</option>
+                <option value="school">What was the name of your first school?</option>
+            </select>
+        </div>
+
+        <div>
+            <label>Security Answer:</label>
+            <input type="text" name="security_answer" required>
+        </div>
+
+
+        <Br>
+        <Br>
+
+        <div>
+            <label>Student Details:</label>
+        </div> 
+
+        <div>
+            <label>Student First Name:</label>
+            <input type="text" name="student_first_name" required>
+        </div>
+
+        <div>
+            <label>Student Last Name:</label>
+            <input type="text" name="student_last_name" required>
+        </div>
+        
+        <div>
+            <label>Student Contact Number:</label>
+            <input type="text" name="student_contact_number">
+        </div>
+
+        <div>
+            <label>Student Email Address:</label>
+            <input type="email" name="student_email_address" required>
+        </div>
+
+        <div>
+            
+        <br>
+
+        <button type="submit">Sign Up</button>
     </form>
-    <br><br>
+    
     <br>
-    <header>
-    </body>
+    
+    <a href="sign_in.php">Sign in</a>
+
+</body>
 </html>

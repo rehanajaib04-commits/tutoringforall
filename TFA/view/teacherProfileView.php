@@ -10,7 +10,6 @@
             color: #333;
         }
 
-        /* Navigation Bar */
         .navbar {
             display: flex;
             justify-content: space-between;
@@ -21,6 +20,8 @@
         .navbar .logo {
             font-size: 24px;
             font-weight: normal;
+            text-decoration: none;
+            color: #333;
         }
         .nav-links a {
             text-decoration: none;
@@ -28,14 +29,18 @@
             margin-left: 20px;
             font-size: 16px;
             padding: 8px 12px;
-            border: 1px solid #ccc; /* replicating the button look in wireframe */
+            border: 1px solid #ccc;
             border-radius: 4px;
         }
         .nav-links a:hover {
             background-color: #f0f0f0;
         }
+        .nav-links span {
+            margin-left: 20px;
+            font-size: 14px;
+            color: #555;
+        }
 
-        /* Main Container */
         .container {
             display: flex;
             width: 80%;
@@ -44,11 +49,11 @@
             gap: 50px;
         }
 
-        /* Left Sidebar (Image, Rating, Bio) */
         .left-sidebar {
             width: 30%;
             display: flex;
             flex-direction: column;
+            align-items: center;
         }
 
         .profile-pic-container {
@@ -57,50 +62,18 @@
             border: 2px solid #333;
             border-radius: 15px;
             overflow: hidden;
-            background-color: #f9f9f9;
-            position: relative;
-            margin-bottom: 10px;
-        }
-        
-        /* Placeholder icon style if no image */
-        .profile-pic-placeholder {
-            width: 100%;
-            height: 100%;
+            background-color: #f0f0f0;
             display: flex;
             align-items: center;
             justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .profile-pic-placeholder {
             font-size: 80px;
-            color: #ccc;
+            color: #bbb;
         }
 
-        .profile-pic img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .rating-block {
-            font-size: 18px;
-            font-weight: bold;
-            margin-bottom: 30px;
-        }
-        .star-icon {
-            font-size: 24px;
-        }
-
-        .bio-section h3 {
-            font-size: 18px;
-            margin-bottom: 10px;
-            text-decoration: underline; /* Matches wireframe style somewhat */
-        }
-        .bio-text {
-            font-size: 14px;
-            line-height: 1.6;
-            color: #555;
-            white-space: pre-line; /* Preserves line breaks */
-        }
-
-        /* Right Content (Details) */
         .right-content {
             width: 70%;
         }
@@ -111,7 +84,6 @@
             font-weight: normal;
         }
 
-        /* Section Dividers and Layout */
         .info-section {
             border-bottom: 1px solid #999;
             padding: 20px 0;
@@ -127,17 +99,6 @@
             display: block;
         }
 
-        .info-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-        .info-list li {
-            margin-bottom: 5px;
-            font-size: 16px;
-        }
-
-        /* Action Links with Arrows */
         .action-link {
             display: flex;
             justify-content: space-between;
@@ -155,13 +116,11 @@
             font-size: 24px;
         }
 
-        /* Contact Details */
         .contact-details p {
             margin: 5px 0;
             font-size: 16px;
         }
 
-        /* Mobile Responsive */
         @media (max-width: 768px) {
             .container {
                 flex-direction: column;
@@ -170,101 +129,61 @@
             .left-sidebar, .right-content {
                 width: 100%;
             }
-            .navbar {
-                padding: 10px 20px;
-            }
-            .nav-links {
-                display: none; /* Hide nav links on mobile for simplicity, or add hamburger menu logic */
-            }
+            .nav-links { display: none; }
         }
     </style>
 </head>
 <body>
 
-    <nav class="navbar">
-        <div class="logo">Home</div>
-        <div class="nav-links">
-            <a href="#">Search</a>
-            <a href="#">Lessons</a>
-            <a href="#">Sign Out</a>
-        </div>
-    </nav>
+<nav class="navbar">
+    <a href="teacherlist.php" class="logo">Home</a>
+    <div class="nav-links">
+        <?php if (isset($_SESSION['email_address'])): ?>
+            <span>Logged in as: <?= htmlspecialchars($_SESSION['email_address']) ?></span>
+            <a href="logout.php">Sign Out</a>
+        <?php else: ?>
+            <a href="sign_in.php">Sign In</a>
+        <?php endif; ?>
+    </div>
+</nav>
 
-    <div class="container">
-        
-        <div class="left-sidebar">
-          
+<div class="container">
 
-            <div class="rating-block">
-                Reviews: <?= number_format($teacher->rating ?? 0, 1) ?> 
-            </div>
-
-            <div class="bio-section">
-                <h3>Teachers Bio:</h3>
-                <div class="bio-text">
-                    <?= !empty($teacher->bio) ? htmlspecialchars($teacher->bio) : "-------------------\n-------------------\n-------------------" ?>
-                </div>
-            </div>
-        </div>
-
-        <div class="right-content">
-            <h1 class="teacher-name"><?= htmlspecialchars(($teacher->first_name ?? '') . ' ' . ($teacher->last_name ?? '')) ?></h1>
-
-            <div class="info-section">
-                <span class="section-label">Qualifications:</span>
-                <ul class="info-list">
-                    <?php if (!empty($teacher->qualifications)): ?>
-                        <?php 
-                        $qualifications = explode(',', $teacher->qualifications);
-                        foreach ($qualifications as $qual): ?>
-                            <li><?= htmlspecialchars(trim($qual)) ?></li>
-                        <?php endforeach; ?>
-                    <?php else: ?>
-                        <li>No qualifications listed</li>
-                    <?php endif; ?>
-                </ul>
-            </div>
-
-            <div class="info-section">
-                <span class="section-label">Teaches:</span>
-                <ul class="info-list">
-                    <li><?= htmlspecialchars($teacher->teacher_type ?? 'General Subjects') ?></li>
-                    <?php if (!empty($teacher->subjects)): ?>
-                         <li><?= htmlspecialchars($teacher->subjects) ?></li>
-                    <?php endif; ?>
-                </ul>
-            </div>
-
-            <div class="info-section">
-                <a href="reviews.php?teacher_id=<?= $teacher->teacher_id ?>" class="action-link">
-                    See Reviews:
-                    <span class="arrow">&rarr;</span>
-                </a>
-            </div>
-
-            <div class="info-section">
-                <a href="bookingspage.php?teacher_id=<?= $teacher->teacher_id ?>" class="action-link">
-                    See Availability
-                    <span class="arrow">&rarr;</span>
-                </a>
-            </div>
-
-            <div class="info-section">
-                <span class="section-label">Contact Details:</span>
-                <div class="contact-details">
-                    <?php if (!empty($teacher->contact_number)): ?>
-                        <p>Number: <?= htmlspecialchars($teacher->contact_number) ?></p>
-                    <?php endif; ?>
-                    
-                    <?php if (!empty($teacher->email_address)): ?>
-                        <p>Email: <?= htmlspecialchars($teacher->email_address) ?></p>
-                    <?php endif; ?>
-                    
-                    </div>
-            </div>
-
+    <div class="left-sidebar">
+        <div class="profile-pic-container">
+            <span class="profile-pic-placeholder">&#128100;</span>
         </div>
     </div>
+
+    <div class="right-content">
+        <h1 class="teacher-name"><?= htmlspecialchars(($teacher->first_name ?? '') . ' ' . ($teacher->last_name ?? '')) ?></h1>
+
+        <div class="info-section">
+            <span class="section-label">Teaches:</span>
+            <p><?= htmlspecialchars($teacher->teacher_type ?? 'General Subjects') ?></p>
+        </div>
+
+        <div class="info-section">
+            <a href="availability.php?teacher_email=<?= urlencode($teacher->email_address) ?>" class="action-link">
+                See Availability
+                <span class="arrow">&rarr;</span>
+            </a>
+        </div>
+
+        <div class="info-section">
+            <span class="section-label">Contact Details:</span>
+            <div class="contact-details">
+                <?php if (!empty($teacher->contact_number)): ?>
+                    <p>Number: <?= htmlspecialchars($teacher->contact_number) ?></p>
+                <?php endif; ?>
+                <?php if (!empty($teacher->email_address)): ?>
+                    <p>Email: <?= htmlspecialchars($teacher->email_address) ?></p>
+                <?php endif; ?>
+            </div>
+        </div>
+
+    </div>
+</div>
 
 </body>
 </html>

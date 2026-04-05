@@ -4,35 +4,38 @@ session_start();
 require_once "../model/user.php";
 require_once "../model/dataAccess.php";
 
+
+if (isset($_SESSION['email_address'])) {
+    header("Location: teacherlist.php");
+    exit();
+}
+
 $error = "";
 
-if (isset($_POST['submit'])) {
-    if (isset($_POST['email_address']) && isset($_POST['password']) && 
-        $_POST['email_address'] != "" && $_POST['password'] != "") {
-        
-        $email_address = $_POST['email_address'];
-        $password = $_POST['password'];
-        
-        // Use loginUser function to validate both email_address and password
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+    $email_address = trim($_POST['email_address'] ?? '');
+    $password      = $_POST['password'] ?? '';
+
+    if ($email_address === '' || $password === '') {
+        $error = "Please enter both your email and password.";
+    } else {
         $results = loginUser($email_address, $password);
-        
-        if (!empty($results) && count($results) > 0) {
-            // User found and password matches
+
+        if (!empty($results)) {
             $user = $results[0];
             $_SESSION['email_address'] = $user->email_address;
-            $_SESSION['user_type'] = $user->user_type;
-            $_SESSION['user_id'] = $user->user_id;
-            
-            // Redirect to success page
-            header("Location: ../controller/teacherlist.php");
+            $_SESSION['user_type']     = $user->user_type;
+
+            // Go back to the page they were trying to reach, or default to teacherlist
+            $redirect = $_GET['redirect'] ?? $_POST['redirect'] ?? '../controller/teacherlist.php';
+            header("Location: " . $redirect);
             exit();
         } else {
-            $error = "Invalid username or password.";
+            $error = "Invalid email or password. Please try again.";
         }
-    } else {
-        $error = "Please enter both username and password.";
     }
 }
 
-require_once "../view/signin_view.php"
+require_once "../view/signin_view.php";
 ?>

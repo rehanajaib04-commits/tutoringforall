@@ -1,11 +1,13 @@
 <?php 
 class Booking {
-    private $booking_id;
-    private $teacher_id;
-    private $student_id;
-    private $date;
+    private $slot_id;
+    private $teacher_email_address;
+    private $student_email_address;
+    private $slot_date;
     private $start_time;
+    private $end_time;
     private $status;
+    private $is_booked;
 
 
     function __get($name){
