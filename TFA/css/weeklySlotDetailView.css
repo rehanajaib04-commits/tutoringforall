@@ -1,0 +1,22 @@
+/* Weekly Slot Detail View - Page Specific Styles */
+
+/* Override Bootstrap badge if needed */
+.badge {
+    font-weight: 500;
+}
+
+/* Card adjustments */
+.card {
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* Alert styling for recurring note */
+.alert-success {
+    background-color: #e8f4e8;
+    border-color: #b8ddb8;
+    color: #2a7a2a;
+}
+
+.btn-dark:hover {
+    background-color: #000;
+}

@@ -1,0 +1,26 @@
+/* Sign Up Page - Minimal Overrides */
+
+/* Card shadow consistent with other pages */
+.card {
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08) !important;
+}
+
+/* Section divider and label */
+.section-divider {
+    border-top: 1px solid var(--border-color);
+    margin: 1.5rem 0;
+}
+
+.section-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--secondary-color);
+    margin-bottom: 1rem;
+}
+
+/* Ensure the subtitle uses the secondary color variable */
+.text-secondary {
+    color: var(--secondary-color) !important;
+}

@@ -1,216 +1,173 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Admin - Add New User</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Add New User - Tutoring For All</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="../css/common.css">
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
-        .form-group { margin-bottom: 15px; }
-        label { display: inline-block; width: 180px; vertical-align: top; font-weight: bold; }
-        input[type="text"], input[type="email"], input[type="password"], select, textarea {
-            width: 300px;
-            padding: 5px;
-            border: 1px solid #ccc;
-        }
-        textarea { height: 100px; resize: vertical; }
-        .error { color: red; font-weight: bold; margin-bottom: 15px; }
-        .success { color: green; font-weight: bold; margin-bottom: 15px; padding: 10px; background-color: #e8f5e9; border: 1px solid #4caf50; }
-        button { padding: 10px 20px; background-color: #4CAF50; color: white; border: none; cursor: pointer; margin-right: 10px; }
-        button:hover { background-color: #45a049; }
-        a { color: #0066cc; text-decoration: none; }
-        a:hover { text-decoration: underline; }
-        .section-header { margin-top: 30px; margin-bottom: 15px; font-size: 1.2em; font-weight: bold; color: #333; border-bottom: 2px solid #4CAF50; padding-bottom: 5px; }
-        .back-link { margin-top: 20px; display: inline-block; }
+        .section-header { font-weight: 600; margin-top: 2rem; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--primary-color); }
     </style>
 </head>
 <body>
 
-    <h2>System Administration - Add New User</h2>
+<nav class="navbar navbar-expand-lg navbar-light">
+    <div class="container-fluid px-0">
+        <a href="adminDashboard.php" class="navbar-brand">Tutoring For All Admin</a>
+        <div class="navbar-nav ms-auto">
+            <a href="logout.php" class="nav-link">Sign Out</a>
+        </div>
+    </div>
+</nav>
+
+<div class="container py-4" style="max-width: 700px;">
+    <h1 class="h2 fw-normal mb-4">System Administration - Add New User</h1>
 
     <?php if(!empty($error_message)): ?>
-        <div class="error"><?php echo $error_message; ?></div>
+        <div class="alert alert-danger"><?= htmlspecialchars($error_message) ?></div>
     <?php endif; ?>
-    
     <?php if(!empty($success_message)): ?>
-        <div class="success"><?php echo $success_message; ?></div>
+        <div class="alert alert-success"><?= htmlspecialchars($success_message) ?></div>
     <?php endif; ?>
 
     <?php if (!isset($_GET['step']) || $_GET['step'] != '2'): ?>
-        <!-- Step 1: Select User Type -->
-        <div class="section-header">Step 1: Select User Type</div>
-        
-        <form method="get" action="">
-            <input type="hidden" name="step" value="2">
-            
-            <div class="form-group">
-                <label>User Type:</label>
-                <select name="type" required>
-                    <option value="">-- Select User Type --</option>
-                    <option value="teacher">Teacher</option>
-                    <option value="student">Student</option>
-                    <option value="parent">Parent</option>
-                    <option value="admin">System Administrator</option>
-                </select>
-            </div>
-            
-            <button type="submit">Next Step</button>
-        </form>
-
-    <?php else: ?>
-        <!-- Step 2: Dynamic Form Based on Selected Type -->
-        <?php $user_type = $_GET['type']; ?>
-        
-        <?php if (!in_array($user_type, ['teacher', 'student', 'parent', 'admin'])): ?>
-            <div class="error">Invalid user type selected.</div>
-            <a href="adminAddUser.php" class="back-link">← Back to Selection</a>
-        <?php else: ?>
-            
-            <div class="section-header">Step 2: Enter <?php echo ucfirst($user_type); ?> Details</div>
-            
-            <form method="POST" action="?step=2&type=<?php echo htmlspecialchars($user_type); ?>">
-                <input type="hidden" name="user_type" value="<?php echo htmlspecialchars($user_type); ?>">
-                
-                <!-- Common Fields for All User Types -->
-                <div class="form-group">
-                    <label>First Name:*</label>
-                    <input type="text" name="first_name" required>
-                </div>
-                
-                <div class="form-group">
-                    <label>Last Name:*</label>
-                    <input type="text" name="last_name" required>
-                </div>
-                
-                <div class="form-group">
-                    <label>Contact Number:</label>
-                    <input type="text" name="contact_number" placeholder="Optional">
-                </div>
-                
-                <div class="form-group">
-                    <label>Email Address:*</label>
-                    <input type="email" name="email_address" required>
-                </div>
-                
-                <div class="form-group">
-                    <label>Password:*</label>
-                    <input type="password" name="password" required>
-                </div>
-                
-                <div class="form-group">
-                    <label>Security Question:*</label>
-                    <select name="security_question" required>
-                        <option value="pet">What is the name of your first pet?</option>
-                        <option value="city">What city were you born in?</option>
-                        <option value="school">What was the name of your first school?</option>
+        <div class="card border rounded-4 p-4">
+            <h5 class="fw-semibold mb-3">Step 1: Select User Type</h5>
+            <form method="get" action="">
+                <input type="hidden" name="step" value="2">
+                <div class="mb-3">
+                    <label class="form-label">User Type</label>
+                    <select name="type" class="form-select" required>
+                        <option value="">-- Select User Type --</option>
+                        <option value="teacher">Teacher</option>
+                        <option value="student">Student</option>
+                        <option value="parent">Parent</option>
+                        <option value="admin">System Administrator</option>
                     </select>
                 </div>
-                
-                <div class="form-group">
-                    <label>Security Answer:*</label>
-                    <input type="text" name="security_answer" required>
-                </div>
-                
-                <?php if ($user_type == 'teacher'): ?>
-                    <!-- Teacher Specific Fields -->
-                    <div class="section-header">Professional Details</div>
-                    
-                    <div class="form-group">
-                        <label>Teacher Type:</label>
-                        <input type="text" name="teacher_type" placeholder="e.g., Full-time, Part-time, Substitute">
-                    </div>
-                    
-                   <!-- <div class="form-group">
-                        <label>Bio:</label>
-                        <textarea name="bio" placeholder="Professional biography and teaching philosophy..."></textarea>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>Qualifications:</label>
-                        <textarea name="qualifications" placeholder="Degrees, certifications, training..."></textarea>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>Subjects:</label>
-                        <input type="text" name="subjects" placeholder="e.g., Mathematics, Physics, English Literature">
-                    </div>
-                 
-                    <p style="color: #666; font-style: italic;">* Rating will be set to NULL and calculated based on reviews.</p>
-                   -->
-                <?php elseif ($user_type == 'student'): ?>
-                    <!-- Student Specific Fields -->
-                    <div class="section-header">Academic Details</div>
-                    
-                    <div class="form-group">
-                        <label>Student Type:</label>
-                        <input type="text" name="student_type" placeholder="e.g., Undergraduate, Postgraduate, High School">
-                    </div>
-                    
-                    <div class="section-header">Parent/Guardian Link</div>
-                    
-                    <div class="form-group">
-                        <label>Link to Parent:</label>
-                        <select name="parent_email">
-                            <option value="">-- Select Existing Parent (Optional) --</option>
-                            <?php foreach ($parents_list as $parent): ?>
-                                <option value="<?php echo htmlspecialchars($parent['email_address']); ?>">
-                                    <?php echo htmlspecialchars($parent['first_name'] . ' ' . $parent['last_name'] . ' - ' . $parent['email_address']); ?>
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
-                    
-                    <?php if (empty($parents_list)): ?>
-                        <p style="color: orange;">Note: No parents found in system. You can create the student now and link to a parent later.</p>
-                    <?php endif; ?>
-                    
-                <?php elseif ($user_type == 'parent'): ?>
-                    <!-- Parent Specific Fields -->
-                    <div class="section-header">Parent Details</div>
-                    
-                    <div class="form-group">
-                        <label>Parent Type:</label>
-                        <input type="text" name="parent_type" placeholder="e.g., Father, Mother, Guardian">
-                    </div>
-                    
-                    <div class="section-header">Address Information</div>
-                    
-                    <div class="form-group">
-                        <label>Address Line 1:*</label>
-                        <input type="text" name="address_line1" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>Address Line 2:</label>
-                        <input type="text" name="address_line2">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>Town:*</label>
-                        <input type="text" name="town" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>County:</label>
-                        <input type="text" name="county">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>Post Code:*</label>
-                        <input type="text" name="post_code" required>
-                    </div>
-                    
-                <?php elseif ($user_type == 'admin'): ?>
-                    <!-- Admin has no additional fields beyond common ones -->
-                    <div class="section-header">Administrator Account</div>
-                    <p>This will create a system administrator account with full access privileges.</p>
-                <?php endif; ?>
-                
-                <br>
-                <button type="submit">Create <?php echo ucfirst($user_type); ?> Account</button>
-                <a href="adminAddUser.php" style="margin-left: 10px;">← Start Over</a>
+                <button type="submit" class="btn btn-dark">Next Step</button>
             </form>
-            
+        </div>
+    <?php else: ?>
+        <?php $user_type = $_GET['type']; ?>
+        <?php if (!in_array($user_type, ['teacher', 'student', 'parent', 'admin'])): ?>
+            <div class="alert alert-danger">Invalid user type selected.</div>
+            <a href="adminAddUser.php" class="btn btn-outline-secondary">← Back to Selection</a>
+        <?php else: ?>
+            <div class="card border rounded-4 p-4">
+                <h5 class="fw-semibold mb-3">Step 2: Enter <?= ucfirst($user_type) ?> Details</h5>
+                <form method="POST" action="?step=2&type=<?= htmlspecialchars($user_type) ?>">
+                    <input type="hidden" name="user_type" value="<?= htmlspecialchars($user_type) ?>">
+
+                    <!-- Common Fields -->
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">First Name *</label>
+                            <input type="text" name="first_name" class="form-control" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Last Name *</label>
+                            <input type="text" name="last_name" class="form-control" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Contact Number</label>
+                            <input type="text" name="contact_number" class="form-control">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Email Address *</label>
+                            <input type="email" name="email_address" class="form-control" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Password *</label>
+                            <input type="password" name="password" class="form-control" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Security Question *</label>
+                            <select name="security_question" class="form-select" required>
+                                <option value="pet">What is the name of your first pet?</option>
+                                <option value="city">What city were you born in?</option>
+                                <option value="school">What was the name of your first school?</option>
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Security Answer *</label>
+                            <input type="text" name="security_answer" class="form-control" required>
+                        </div>
+                    </div>
+
+                    <?php if ($user_type == 'teacher'): ?>
+                        <div class="section-header">Professional Details</div>
+                        <div class="mb-3">
+                            <label class="form-label">Teacher Type</label>
+                            <input type="text" name="teacher_type" class="form-control" placeholder="e.g., Full-time, Part-time">
+                        </div>
+                    <?php elseif ($user_type == 'student'): ?>
+                        <div class="section-header">Academic Details</div>
+                        <div class="mb-3">
+                            <label class="form-label">Student Type</label>
+                            <input type="text" name="student_type" class="form-control" placeholder="e.g., Undergraduate">
+                        </div>
+                        <div class="section-header">Parent/Guardian Link</div>
+                        <div class="mb-3">
+                            <label class="form-label">Link to Parent</label>
+                            <select name="parent_email" class="form-select">
+                                <option value="">-- Select Existing Parent (Optional) --</option>
+                                <?php foreach ($parents_list as $parent): ?>
+                                    <option value="<?= htmlspecialchars($parent['email_address']) ?>">
+                                        <?= htmlspecialchars($parent['first_name'] . ' ' . $parent['last_name'] . ' - ' . $parent['email_address']) ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                            <?php if (empty($parents_list)): ?>
+                                <div class="form-text text-warning">No parents found. You can link later.</div>
+                            <?php endif; ?>
+                        </div>
+                    <?php elseif ($user_type == 'parent'): ?>
+                        <div class="section-header">Parent Details</div>
+                        <div class="mb-3">
+                            <label class="form-label">Parent Type</label>
+                            <input type="text" name="parent_type" class="form-control" placeholder="e.g., Father, Mother">
+                        </div>
+                        <div class="section-header">Address Information</div>
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <label class="form-label">Address Line 1 *</label>
+                                <input type="text" name="address_line1" class="form-control" required>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Address Line 2</label>
+                                <input type="text" name="address_line2" class="form-control">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Town *</label>
+                                <input type="text" name="town" class="form-control" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">County</label>
+                                <input type="text" name="county" class="form-control">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Post Code *</label>
+                                <input type="text" name="post_code" class="form-control" required>
+                            </div>
+                        </div>
+                    <?php elseif ($user_type == 'admin'): ?>
+                        <div class="section-header">Administrator Account</div>
+                        <p class="text-secondary">This will create a system administrator account with full access privileges.</p>
+                    <?php endif; ?>
+
+                    <div class="d-flex gap-2 mt-4">
+                        <button type="submit" class="btn btn-dark">Create <?= ucfirst($user_type) ?> Account</button>
+                        <a href="adminAddUser.php" class="btn btn-outline-secondary">← Start Over</a>
+                    </div>
+                </form>
+            </div>
         <?php endif; ?>
     <?php endif; ?>
+</div>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

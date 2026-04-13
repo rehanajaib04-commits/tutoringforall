@@ -215,29 +215,47 @@ function bookSlot($slot_id, $studentEmailAddress) {
     // Step 2: ensure student row exists (satisfies FK if present)
     ensureStudentRecord($studentEmailAddress);
 
-    // Step 3: mark the slot as booked
-    $updateStmt = $pdo->prepare(
-        "UPDATE lesson_slots
-         SET is_booked = 1, student_email_address = ?
-         WHERE slot_id = ? AND is_booked = 0"
-    );
-    $updateStmt->execute([trim($studentEmailAddress), $slot_id]);
+    $pdo->beginTransaction();
+    
+    try {
+        // Step 3: mark the slot as booked
+        $updateStmt = $pdo->prepare(
+            "UPDATE lesson_slots
+             SET is_booked = 1, student_email_address = ?
+             WHERE slot_id = ? AND is_booked = 0"
+        );
+        $updateStmt->execute([trim($studentEmailAddress), $slot_id]);
 
-    if ($updateStmt->rowCount() === 0) {
-        return false; // another request booked it first
+        if ($updateStmt->rowCount() === 0) {
+            $pdo->rollBack();
+            return false; // another request booked it first
+        }
+
+        // Step 4: insert into bookings table (NEW)
+        $bookingStmt = $pdo->prepare(
+            "INSERT INTO bookings (slot_id, student_email_address, status) 
+             VALUES (?, ?, 'scheduled')"
+        );
+        $bookingStmt->execute([$slot_id, trim($studentEmailAddress)]);
+
+        $pdo->commit();
+
+        // Step 5: return the full slot with teacher name
+        $resultStmt = $pdo->prepare(
+            "SELECT ls.slot_id, ls.teacher_email_address, ls.slot_date, ls.start_time, ls.end_time,
+                    ls.is_booked, ls.student_email_address,
+                    u.first_name AS teacher_first_name, u.last_name AS teacher_last_name
+             FROM lesson_slots ls
+             INNER JOIN users u ON u.email_address = ls.teacher_email_address
+             WHERE ls.slot_id = ?"
+        );
+        $resultStmt->execute([$slot_id]);
+        return $resultStmt->fetch(PDO::FETCH_OBJ);
+        
+    } catch (Exception $e) {
+        $pdo->rollBack();
+        return false;
     }
-
-    // Step 4: return the full slot with teacher name
-    $resultStmt = $pdo->prepare(
-        "SELECT ls.slot_id, ls.teacher_email_address, ls.slot_date, ls.start_time, ls.end_time,
-                ls.is_booked, ls.student_email_address,
-                u.first_name AS teacher_first_name, u.last_name AS teacher_last_name
-         FROM lesson_slots ls
-         INNER JOIN users u ON u.email_address = ls.teacher_email_address
-         WHERE ls.slot_id = ?"
-    );
-    $resultStmt->execute([$slot_id]);
-    return $resultStmt->fetch(PDO::FETCH_OBJ);
 }
 
 function getCurrentBookingsForUser($studentEmailAddress) {
@@ -256,5 +274,295 @@ function getCurrentBookingsForUser($studentEmailAddress) {
     );
     $statement->execute([trim($studentEmailAddress)]);
     return $statement->fetchAll(PDO::FETCH_OBJ);
+}
+
+// --- Profile update functions ---
+
+function updateUserProfile($email_address, $first_name, $last_name, $contact_number, $new_password = null) {
+    global $pdo;
+    if ($new_password !== null) {
+        $stmt = $pdo->prepare(
+            "UPDATE users SET first_name = ?, last_name = ?, contact_number = ?, password = ?
+             WHERE email_address = ?"
+        );
+        $stmt->execute([$first_name, $last_name, $contact_number, $new_password, $email_address]);
+    } else {
+        $stmt = $pdo->prepare(
+            "UPDATE users SET first_name = ?, last_name = ?, contact_number = ?
+             WHERE email_address = ?"
+        );
+        $stmt->execute([$first_name, $last_name, $contact_number, $email_address]);
+    }
+}
+
+function updateTeacherRate($email_address, $hourly_rate) {
+    global $pdo;
+    // Add hourly_rate column if it doesn't exist yet (safe to run multiple times)
+    $pdo->exec("ALTER TABLE teachers ADD COLUMN IF NOT EXISTS hourly_rate DECIMAL(8,2) DEFAULT NULL");
+    $stmt = $pdo->prepare("UPDATE teachers SET hourly_rate = ? WHERE email_address = ?");
+    $stmt->execute([$hourly_rate, $email_address]);
+}
+
+function getTeacherRate($email_address) {
+    global $pdo;
+    try {
+        $stmt = $pdo->prepare("SELECT hourly_rate FROM teachers WHERE email_address = ?");
+        $stmt->execute([$email_address]);
+        $row = $stmt->fetch(PDO::FETCH_OBJ);
+        return $row ? $row->hourly_rate : null;
+    } catch (Exception $e) {
+        return null;
+    }
+}
+
+function addLessonSlot($teacher_email, $slot_date, $start_time, $end_time) {
+    global $pdo;
+    $stmt = $pdo->prepare(
+        "INSERT INTO lesson_slots (teacher_email_address, slot_date, start_time, end_time, is_booked)
+         VALUES (?, ?, ?, ?, 0)"
+    );
+    return $stmt->execute([$teacher_email, $slot_date, $start_time, $end_time]);
+}
+
+function getTeacherAllSlots($teacherEmailAddress) {
+    global $pdo;
+    $statement = $pdo->prepare(
+        "SELECT slot_id, teacher_email_address, slot_date, start_time, end_time, is_booked, student_email_address
+         FROM lesson_slots
+         WHERE LOWER(TRIM(teacher_email_address)) = LOWER(TRIM(?))
+           AND slot_date >= CURDATE()
+         ORDER BY slot_date, start_time"
+    );
+    $statement->execute([trim($teacherEmailAddress)]);
+    return $statement->fetchAll(PDO::FETCH_OBJ);
+}
+
+// Also include cancelBooking if not already present
+if (!function_exists('cancelBooking')) {
+    function cancelBooking($slot_id, $studentEmailAddress) {
+        global $pdo;
+        $stmt = $pdo->prepare(
+            "SELECT slot_id, is_booked, student_email_address FROM lesson_slots WHERE slot_id = ?"
+        );
+        $stmt->execute([$slot_id]);
+        $slot = $stmt->fetch(PDO::FETCH_OBJ);
+        if (!$slot || !$slot->is_booked) return 'not_found';
+        if (strtolower(trim($slot->student_email_address)) !== strtolower(trim($studentEmailAddress))) return 'not_owner';
+        $update = $pdo->prepare(
+            "UPDATE lesson_slots SET is_booked = 0, student_email_address = NULL
+             WHERE slot_id = ? AND is_booked = 1 AND LOWER(TRIM(student_email_address)) = LOWER(TRIM(?))"
+        );
+        $update->execute([$slot_id, trim($studentEmailAddress)]);
+        return $update->rowCount() > 0 ? true : false;
+    }
+    function getTeacherBookedSlots($teacherEmailAddress) {
+    global $pdo;
+    $statement = $pdo->prepare(
+        "SELECT ls.slot_id, ls.teacher_email_address, ls.slot_date, ls.start_time, ls.end_time,
+                ls.is_booked, ls.student_email_address,
+                u.first_name AS student_first_name, u.last_name AS student_last_name,
+                u.contact_number AS student_contact_number,
+                t.teacher_type
+         FROM lesson_slots ls
+         INNER JOIN users u ON u.email_address = ls.student_email_address
+         LEFT JOIN teachers t ON t.email_address = ls.teacher_email_address
+         WHERE LOWER(TRIM(ls.teacher_email_address)) = LOWER(TRIM(?))
+           AND ls.is_booked = 1
+         ORDER BY ls.slot_date, ls.start_time"
+    );
+    $statement->execute([trim($teacherEmailAddress)]);
+    return $statement->fetchAll(PDO::FETCH_OBJ);
+}
+
+function releaseTeacherSlot($slot_id, $teacherEmailAddress) {
+    global $pdo;
+    
+    // First verify this slot belongs to this teacher
+    $stmt = $pdo->prepare(
+        "SELECT slot_id, teacher_email_address, is_booked, student_email_address 
+         FROM lesson_slots 
+         WHERE slot_id = ? AND LOWER(TRIM(teacher_email_address)) = LOWER(TRIM(?))"
+    );
+    $stmt->execute([$slot_id, $teacherEmailAddress]);
+    $slot = $stmt->fetch(PDO::FETCH_OBJ);
+    
+    if (!$slot || !$slot->is_booked) {
+        return false;
+    }
+    
+    // Release the slot
+    $update = $pdo->prepare(
+        "UPDATE lesson_slots 
+         SET is_booked = 0, student_email_address = NULL 
+         WHERE slot_id = ?"
+    );
+    $update->execute([$slot_id]);
+    
+    return $update->rowCount() > 0;
+}
+function deleteTeacherSlot($slot_id, $teacherEmailAddress) {
+    global $pdo;
+    
+    $stmt = $pdo->prepare(
+        "DELETE FROM lesson_slots 
+         WHERE slot_id = ? 
+         AND LOWER(TRIM(teacher_email_address)) = LOWER(TRIM(?)) 
+         AND is_booked = 0"
+    );
+    $stmt->execute([$slot_id, $teacherEmailAddress]);
+    
+    return $stmt->rowCount() > 0;
+}
+
+
+
+// Calculate duration in hours (e.g., 1.5 for 90 minutes)
+function calculateDurationHours($start_time, $end_time) {
+    $start = strtotime($start_time);
+    $end = strtotime($end_time);
+    $diff = $end - $start;
+    return $diff / 3600;
+}
+
+// Create invoice for a booking
+function createInvoice($teacher_email, $student_email, $invoice_date, $total) {
+    global $pdo;
+    try {
+        $sql = "INSERT INTO invoices (teacher_email_address, student_email_address, invoice_date, Total, status) 
+                VALUES (?, ?, ?, ?, 'unpaid')";
+        $stmt = $pdo->prepare($sql);
+        return $stmt->execute([$teacher_email, $student_email, $invoice_date, $total]);
+    } catch (PDOException $e) {
+        return false;
+    }
+}
+
+// Get invoices for a student
+function getInvoicesForStudent($student_email) {
+    global $pdo;
+    $sql = "SELECT i.*, t.first_name as teacher_first_name, t.last_name as teacher_last_name 
+            FROM invoices i 
+            JOIN users t ON i.teacher_email_address = t.email_address  /* Changed user to users */
+            WHERE i.student_email_address = ? 
+            ORDER BY i.invoice_date DESC";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute([$student_email]);
+    return $stmt->fetchAll(PDO::FETCH_OBJ);
+}
+
+function getInvoicesForTeacher($teacher_email) {
+    global $pdo;
+    $sql = "SELECT i.*, u.first_name, u.last_name 
+            FROM invoices i 
+            JOIN users u ON i.student_email_address = u.email_address  /* Changed user to users */
+            WHERE i.teacher_email_address = ? 
+            ORDER BY i.invoice_date DESC";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute([$teacher_email]);
+    return $stmt->fetchAll(PDO::FETCH_OBJ);
+}
+
+
+
+// Get teacher's bookings with invoice info (joined)
+function getTeacherBookingsWithInvoices($teacher_email) {
+    global $pdo;
+    $sql = "SELECT 
+                b.lesson_id,
+                b.slot_id,
+                b.student_email_address,
+                b.status as booking_status,
+                ls.slot_date,
+                ls.start_time,
+                ls.end_time,
+                u.first_name as student_first_name,
+                u.last_name as student_last_name,
+                i.invoice_number,
+                i.Total as invoice_total,
+                i.status as invoice_status
+            FROM bookings b
+            JOIN lesson_slots ls ON b.slot_id = ls.slot_id
+            JOIN users u ON b.student_email_address = u.email_address
+            LEFT JOIN invoices i ON i.teacher_email_address = ls.teacher_email_address 
+                                AND i.student_email_address = b.student_email_address
+                                AND i.invoice_date = ls.slot_date
+            WHERE LOWER(TRIM(ls.teacher_email_address)) = LOWER(TRIM(?))
+            ORDER BY ls.slot_date DESC, ls.start_time DESC";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute([trim($teacher_email)]);
+    return $stmt->fetchAll(PDO::FETCH_OBJ);
+}
+
+// Update booking status (scheduled, completed, cancelled)
+function updateBookingStatus($lesson_id, $new_status) {
+    global $pdo;
+    $valid_statuses = ['scheduled', 'completed', 'cancelled'];
+    if (!in_array($new_status, $valid_statuses)) return false;
+    
+    $stmt = $pdo->prepare("UPDATE bookings SET status = ? WHERE lesson_id = ?");
+    return $stmt->execute([$new_status, $lesson_id]);
+}
+
+// Update invoice status (paid, unpaid, overdue)
+function updateInvoiceStatus($invoice_number, $new_status) {
+    global $pdo;
+    $valid_statuses = ['paid', 'unpaid', 'overdue'];
+    if (!in_array($new_status, $valid_statuses)) return false;
+    
+    $stmt = $pdo->prepare("UPDATE invoices SET status = ? WHERE invoice_number = ?");
+    return $stmt->execute([$new_status, $invoice_number]);
+}
+
+// Get single booking details for verification
+function getBookingById($lesson_id) {
+    global $pdo;
+    $stmt = $pdo->prepare("
+        SELECT b.*, ls.teacher_email_address 
+        FROM bookings b
+        JOIN lesson_slots ls ON b.slot_id = ls.slot_id
+        WHERE b.lesson_id = ?
+    ");
+    $stmt->execute([$lesson_id]);
+    return $stmt->fetch(PDO::FETCH_OBJ);
+}
+
+function getAllStudentsForParent($parentEmailAddress) {
+    global $pdo;
+    $statement = $pdo->prepare(
+        "SELECT u.email_address, u.first_name, u.last_name, u.contact_number, s.student_type
+         FROM student_parent sp
+         JOIN users u ON LOWER(TRIM(u.email_address)) = LOWER(TRIM(sp.student_email_address))
+         JOIN students s ON s.email_address = u.email_address
+         WHERE LOWER(TRIM(sp.parent_email_address)) = LOWER(TRIM(?))
+         ORDER BY u.last_name, u.first_name"
+    );
+    $statement->execute([trim($parentEmailAddress)]);
+    return $statement->fetchAll(PDO::FETCH_OBJ);
+}
+
+function getRandomTeacher($requireAvailability = true) {
+    global $pdo;
+    
+    if ($requireAvailability) {
+        $sql = "SELECT DISTINCT t.email_address, t.teacher_type, u.first_name, u.last_name, u.contact_number
+                FROM teachers t
+                INNER JOIN users u ON u.email_address = t.email_address
+                INNER JOIN lesson_slots ls ON ls.teacher_email_address = t.email_address
+                WHERE ls.is_booked = 0 AND ls.slot_date >= CURDATE()
+                ORDER BY RAND()
+                LIMIT 1";
+    } else {
+        $sql = "SELECT t.email_address, t.teacher_type, u.first_name, u.last_name, u.contact_number
+                FROM teachers t
+                INNER JOIN users u ON u.email_address = t.email_address
+                ORDER BY RAND()
+                LIMIT 1";
+    }
+    
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute();
+    return $stmt->fetch(PDO::FETCH_OBJ);
+}
+
 }
 ?>

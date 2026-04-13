@@ -1,73 +1,87 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Weekly Lesson Slot</title>
-    <style>
-        *, *::before, *::after { box-sizing: border-box; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; background: #f5f5f5; color: #333; }
-        .navbar { display: flex; justify-content: space-between; align-items: center; padding: 15px 40px; border-bottom: 2px solid #333; background: #fff; }
-        .navbar .logo { font-size: 24px; text-decoration: none; color: #333; }
-        .nav-links a { text-decoration: none; color: #333; margin-left: 20px; font-size: 15px; padding: 7px 14px; border: 1px solid #ccc; border-radius: 4px; }
-        .nav-links a:hover { background: #f0f0f0; }
-        .nav-links span { margin-left: 20px; font-size: 14px; color: #555; }
-        .container { width: 80%; max-width: 640px; margin: 40px auto; }
-        .back-link { display: inline-block; text-decoration: none; color: #666; font-size: 14px; margin-bottom: 20px; }
-        .back-link:hover { color: #333; text-decoration: underline; }
-        .card { background: #fff; border: 1px solid #ccc; border-radius: 10px; padding: 32px; }
-        .card h1 { font-size: 26px; font-weight: normal; margin: 0 0 6px; }
-        .card .subtitle { color: #666; font-size: 14px; margin: 0 0 24px; }
-        .badge-weekly { display: inline-block; font-size: 12px; padding: 3px 10px; border-radius: 20px; background: #e8f4e8; color: #2a7a2a; border: 1px solid #b8ddb8; margin-bottom: 20px; }
-        .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 28px; }
-        .detail-item { background: #fafafa; border: 1px solid #eee; border-radius: 8px; padding: 14px; }
-        .detail-item span { display: block; font-size: 11px; color: #888; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
-        .detail-item strong { font-size: 16px; font-weight: 600; }
-        .recurs-note { background: #e8f4e8; border: 1px solid #b8ddb8; border-radius: 8px; padding: 14px 16px; font-size: 14px; color: #2a7a2a; margin-bottom: 24px; }
-        .btn-book { display: inline-block; background: #333; color: #fff; padding: 12px 28px; border-radius: 6px; text-decoration: none; font-size: 16px; border: none; cursor: pointer; }
-        .btn-book:hover { background: #111; }
-        .login-note { font-size: 14px; color: #888; }
-        .login-note a { color: #333; font-weight: bold; }
-    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weekly Lesson Slot - Tutoring For All</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="../css/common.css">
+    <link rel="stylesheet" href="../css/weeklySlotDetailView.css">
 </head>
 <body>
-<nav class="navbar">
-    <a href="teacherlist.php" class="logo">TutorFind</a>
-    <div class="nav-links">
-        <?php if (isset($_SESSION['email_address'])): ?>
-            <span>Logged in as: <?= htmlspecialchars($_SESSION['email_address']) ?></span>
-            <a href="bookingspage.php">My Bookings</a>
-            <a href="logout.php">Sign Out</a>
-        <?php else: ?>
-            <a href="sign_in.php">Sign In</a>
-        <?php endif; ?>
+
+<nav class="navbar navbar-expand-lg navbar-light">
+    <div class="container-fluid px-0">
+        <a href="teacherlist.php" class="navbar-brand">Tutoring For All</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+            <ul class="navbar-nav align-items-center">
+                <?php if (isset($_SESSION['email_address'])): ?>
+                    <li class="nav-item">
+                        <span class="user-email d-none d-lg-inline"><?= htmlspecialchars($_SESSION['email_address']) ?></span>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="bookingspage.php">
+                            <i class="bi bi-calendar-check me-1"></i>My Bookings
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="logout.php">
+                            <i class="bi bi-box-arrow-right me-1"></i>Sign Out
+                        </a>
+                    </li>
+                <?php else: ?>
+                    <li class="nav-item">
+                        <a class="nav-link" href="sign_in.php">
+                            <i class="bi bi-box-arrow-in-right me-1"></i>Sign In
+                        </a>
+                    </li>
+                <?php endif; ?>
+            </ul>
+        </div>
     </div>
 </nav>
-<div class="container">
-    <a href="availability.php?teacher_email=<?= urlencode($teacher->email_address) ?>" class="back-link">&larr; Back to availability</a>
-    <div class="card">
-        <span class="badge-weekly">🔁 Weekly Recurring Lesson</span>
-        <h1><?= htmlspecialchars($teacher->first_name . ' ' . $teacher->last_name) ?></h1>
-        <p class="subtitle"><?= htmlspecialchars($teacher->teacher_type ?? 'General Lessons') ?></p>
 
-        <div class="detail-grid">
-            <div class="detail-item">
-                <span>Day</span>
-                <strong>Every <?= htmlspecialchars($display_day) ?></strong>
+<div class="container py-5" style="max-width: 640px;">
+    <a href="availability.php?teacher_email=<?= urlencode($teacher->email_address) ?>" class="btn btn-link text-secondary text-decoration-none px-0 mb-3">
+        <i class="bi bi-arrow-left me-1"></i>Back to availability
+    </a>
+    <div class="card border rounded-4 p-4">
+        <span class="badge bg-success-subtle text-success-emphasis mb-3 align-self-start">🔁 Weekly Recurring Lesson</span>
+        <h1 class="h3 fw-normal"><?= htmlspecialchars($teacher->first_name . ' ' . $teacher->last_name) ?></h1>
+        <p class="text-secondary"><?= htmlspecialchars($teacher->teacher_type ?? 'General Lessons') ?></p>
+
+        <div class="row g-3 mb-4">
+            <div class="col-6">
+                <div class="bg-light p-3 rounded-3">
+                    <span class="text-secondary text-uppercase small fw-semibold">Day</span>
+                    <div class="fw-semibold">Every <?= htmlspecialchars($display_day) ?></div>
+                </div>
             </div>
-            <div class="detail-item">
-                <span>Time</span>
-                <strong><?= htmlspecialchars($display_start) ?> – <?= htmlspecialchars($display_end) ?></strong>
+            <div class="col-6">
+                <div class="bg-light p-3 rounded-3">
+                    <span class="text-secondary text-uppercase small fw-semibold">Time</span>
+                    <div class="fw-semibold"><?= htmlspecialchars($display_start) ?> – <?= htmlspecialchars($display_end) ?></div>
+                </div>
             </div>
-            <div class="detail-item">
-                <span>First Lesson</span>
-                <strong><?= htmlspecialchars($display_date) ?></strong>
+            <div class="col-6">
+                <div class="bg-light p-3 rounded-3">
+                    <span class="text-secondary text-uppercase small fw-semibold">First Lesson</span>
+                    <div class="fw-semibold"><?= htmlspecialchars($display_date) ?></div>
+                </div>
             </div>
-            <div class="detail-item">
-                <span>Teacher</span>
-                <strong><?= htmlspecialchars($teacher->first_name . ' ' . $teacher->last_name) ?></strong>
+            <div class="col-6">
+                <div class="bg-light p-3 rounded-3">
+                    <span class="text-secondary text-uppercase small fw-semibold">Teacher</span>
+                    <div class="fw-semibold"><?= htmlspecialchars($teacher->first_name . ' ' . $teacher->last_name) ?></div>
+                </div>
             </div>
         </div>
 
-        <div class="recurs-note">
+        <div class="alert alert-success mb-4">
             🔁 This is a <strong>weekly recurring</strong> booking. The lesson will repeat every <?= htmlspecialchars($display_day) ?> at <?= htmlspecialchars($display_start) ?>.
         </div>
 
@@ -75,12 +89,14 @@
             <form method="POST" action="confirmWeeklyBooking.php">
                 <input type="hidden" name="availability_id" value="<?= htmlspecialchars($slot->availability_id) ?>">
                 <input type="hidden" name="teacher_email"   value="<?= htmlspecialchars($teacher->email_address) ?>">
-                <button type="submit" class="btn-book">Confirm Weekly Booking</button>
+                <button type="submit" class="btn btn-dark btn-lg w-100">Confirm Weekly Booking</button>
             </form>
         <?php else: ?>
-            <p class="login-note"><a href="sign_in.php">Sign in</a> as a student or parent to book this lesson.</p>
+            <p class="text-secondary"><a href="sign_in.php" class="fw-semibold text-dark">Sign in</a> as a student or parent to book this lesson.</p>
         <?php endif; ?>
     </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

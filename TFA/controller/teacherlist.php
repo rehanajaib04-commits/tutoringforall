@@ -11,5 +11,5 @@ if (isset($_POST['search']) && !empty(trim($_POST['search']))) {
     $results = getAllTeacher();
 }
 
-require_once "../view/viewTeacher_view.php";
+require_once "../view/teacherListView.php";
 ?>

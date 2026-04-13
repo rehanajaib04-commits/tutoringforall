@@ -1,70 +1,92 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title><?= $success ? 'Booking Confirmed' : 'Booking Failed' ?></title>
-    <style>
-        *, *::before, *::after { box-sizing: border-box; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; background: #f5f5f5; color: #333; }
-        .navbar { display: flex; justify-content: space-between; align-items: center; padding: 15px 40px; border-bottom: 2px solid #333; background: #fff; }
-        .navbar .logo { font-size: 24px; text-decoration: none; color: #333; }
-        .nav-links a { text-decoration: none; color: #333; margin-left: 20px; font-size: 15px; padding: 7px 14px; border: 1px solid #ccc; border-radius: 4px; }
-        .nav-links a:hover { background: #f0f0f0; }
-        .nav-links span { margin-left: 20px; font-size: 14px; color: #555; }
-        .container { width: 80%; max-width: 580px; margin: 60px auto; }
-        .card { background: #fff; border: 1px solid #ccc; border-radius: 10px; padding: 36px; text-align: center; }
-        .icon { font-size: 48px; margin-bottom: 16px; }
-        .card h1 { font-size: 26px; font-weight: normal; margin: 0 0 10px; }
-        .card p { color: #666; margin: 0 0 24px; font-size: 15px; }
-        .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 28px; text-align: left; }
-        .detail-item { background: #fafafa; border: 1px solid #eee; border-radius: 8px; padding: 12px 14px; }
-        .detail-item span { display: block; font-size: 11px; color: #888; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 3px; }
-        .detail-item strong { font-size: 15px; }
-        .recurs-note { background: #e8f4e8; border: 1px solid #b8ddb8; border-radius: 8px; padding: 12px 16px; font-size: 14px; color: #2a7a2a; margin-bottom: 24px; text-align: left; }
-        .btn { display: inline-block; padding: 11px 24px; border-radius: 6px; text-decoration: none; font-size: 15px; margin: 4px; }
-        .btn-primary { background: #333; color: #fff; border: 1px solid #333; }
-        .btn-primary:hover { background: #111; }
-        .btn-secondary { background: #fff; color: #333; border: 1px solid #ccc; }
-        .btn-secondary:hover { background: #f0f0f0; }
-        .error-card { border-color: #f5c6c6; }
-        .error-card h1 { color: #b00; }
-    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><?= $success ? 'Booking Confirmed' : 'Booking Failed' ?> - Tutoring For All</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="../css/common.css">
 </head>
 <body>
-<nav class="navbar">
-    <a href="teacherlist.php" class="logo">TutorFind</a>
-    <div class="nav-links">
-        <?php if (isset($_SESSION['email_address'])): ?>
-            <span>Logged in as: <?= htmlspecialchars($_SESSION['email_address']) ?></span>
-            <a href="bookingspage.php">My Bookings</a>
-            <a href="logout.php">Sign Out</a>
-        <?php endif; ?>
+
+<nav class="navbar navbar-expand-lg navbar-light">
+    <div class="container-fluid px-0">
+        <a href="teacherlist.php" class="navbar-brand">Tutoring For All</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+            <ul class="navbar-nav align-items-center">
+                <?php if (isset($_SESSION['email_address'])): ?>
+                    <li class="nav-item">
+                        <span class="user-email d-none d-lg-inline"><?= htmlspecialchars($_SESSION['email_address']) ?></span>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="bookingspage.php">
+                            <i class="bi bi-calendar-check me-1"></i>My Bookings
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="logout.php">
+                            <i class="bi bi-box-arrow-right me-1"></i>Sign Out
+                        </a>
+                    </li>
+                <?php endif; ?>
+            </ul>
+        </div>
     </div>
 </nav>
-<div class="container">
-    <?php if ($success): ?>
-        <div class="card">
-            <div class="icon">✅</div>
-            <h1>Weekly Booking Confirmed!</h1>
-            <p>Your recurring lesson has been booked successfully.</p>
-            <div class="detail-grid">
-                <div class="detail-item"><span>Teacher</span><strong><?= htmlspecialchars($teacher_email) ?></strong></div>
-                <div class="detail-item"><span>Repeats</span><strong>Every <?= htmlspecialchars($day) ?></strong></div>
-                <div class="detail-item"><span>First Lesson</span><strong><?= htmlspecialchars($date) ?></strong></div>
-                <div class="detail-item"><span>Time</span><strong><?= htmlspecialchars($time) ?></strong></div>
+
+<div class="container py-5 d-flex justify-content-center">
+    <div class="card border rounded-4 p-4 p-md-5 text-center <?= $success ? '' : 'border-danger' ?>" style="max-width: 580px;">
+        <?php if ($success): ?>
+            <div class="display-1 text-success mb-3">✅</div>
+            <h1 class="h3 fw-normal mb-3">Weekly Booking Confirmed!</h1>
+            <p class="text-secondary mb-4">Your recurring lesson has been booked successfully.</p>
+            <div class="row g-3 mb-4 text-start">
+                <div class="col-6">
+                    <div class="bg-light p-3 rounded-3">
+                        <span class="text-secondary text-uppercase small fw-semibold">Teacher</span>
+                        <div class="fw-semibold"><?= htmlspecialchars($teacher_email) ?></div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="bg-light p-3 rounded-3">
+                        <span class="text-secondary text-uppercase small fw-semibold">Repeats</span>
+                        <div class="fw-semibold">Every <?= htmlspecialchars($day) ?></div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="bg-light p-3 rounded-3">
+                        <span class="text-secondary text-uppercase small fw-semibold">First Lesson</span>
+                        <div class="fw-semibold"><?= htmlspecialchars($date) ?></div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="bg-light p-3 rounded-3">
+                        <span class="text-secondary text-uppercase small fw-semibold">Time</span>
+                        <div class="fw-semibold"><?= htmlspecialchars($time) ?></div>
+                    </div>
+                </div>
             </div>
-            <div class="recurs-note">🔁 This lesson will repeat every <strong><?= htmlspecialchars($day) ?></strong> at <strong><?= htmlspecialchars(explode(' - ', $time)[0]) ?></strong>.</div>
-            <a href="bookingspage.php" class="btn btn-primary">View My Bookings</a>
-            <a href="teacherlist.php" class="btn btn-secondary">Find More Tutors</a>
-        </div>
-    <?php else: ?>
-        <div class="card error-card">
-            <div class="icon">❌</div>
-            <h1>Booking Failed</h1>
-            <p><?= htmlspecialchars($error_message) ?></p>
-            <a href="javascript:history.back()" class="btn btn-secondary">Go Back</a>
-            <a href="bookingspage.php" class="btn btn-primary">My Bookings</a>
-        </div>
-    <?php endif; ?>
+            <div class="alert alert-success mb-4">🔁 This lesson will repeat every <strong><?= htmlspecialchars($day) ?></strong> at <strong><?= htmlspecialchars(explode(' - ', $time)[0]) ?></strong>.</div>
+            <div class="d-flex gap-2 justify-content-center">
+                <a href="bookingspage.php" class="btn btn-dark">View My Bookings</a>
+                <a href="teacherlist.php" class="btn btn-outline-dark">Find More Tutors</a>
+            </div>
+        <?php else: ?>
+            <div class="display-1 text-danger mb-3">❌</div>
+            <h1 class="h3 fw-normal mb-3">Booking Failed</h1>
+            <p class="text-secondary mb-4"><?= htmlspecialchars($error_message) ?></p>
+            <div class="d-flex gap-2 justify-content-center">
+                <a href="javascript:history.back()" class="btn btn-outline-secondary">Go Back</a>
+                <a href="bookingspage.php" class="btn btn-dark">My Bookings</a>
+            </div>
+        <?php endif; ?>
+    </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

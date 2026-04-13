@@ -30,12 +30,18 @@ if ($slot->is_booked) {
     die("This slot has already been booked.");
 }
 
-$display_day   = date('l', strtotime($slot->slot_date));      // ADD THIS LINE
+$display_day   = date('l', strtotime($slot->slot_date));     
 $display_date  = date('l, jS F Y', strtotime($slot->slot_date));
 $display_start = date('H:i', strtotime($slot->start_time));
 $display_end   = date('H:i', strtotime($slot->end_time));
 $userType      = $_SESSION['user_type'] ?? '';
 $canBook       = in_array($userType, ['student', 'parent'], true);
 
+$hourly_rate = getTeacherRate($teacher_email);
+$duration_hours = calculateDurationHours($slot->start_time, $slot->end_time);
+$total_cost = $hourly_rate ? round($hourly_rate * $duration_hours, 2) : null;
+
 require_once "../view/slotDetailView.php";
 ?>
+
+<?php

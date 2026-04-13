@@ -1,0 +1,15 @@
+/* Booking Detail View - Page Specific Styles */
+
+.card {
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+.badge {
+    font-weight: 500;
+}
+
+.btn-outline-danger:hover {
+    background-color: var(--danger-color);
+    border-color: var(--danger-color);
+    color: white;
+}

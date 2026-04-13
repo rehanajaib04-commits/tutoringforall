@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Booking Confirmation - Tutoring For All</title>
+    <title><?= $success ? 'Booking Cancelled' : 'Cancellation Failed' ?> - Tutoring For All</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
     <link rel="stylesheet" href="../css/common.css">
@@ -32,12 +32,6 @@
                             <i class="bi bi-box-arrow-right me-1"></i>Sign Out
                         </a>
                     </li>
-                <?php else: ?>
-                    <li class="nav-item">
-                        <a class="nav-link" href="sign_in.php">
-                            <i class="bi bi-box-arrow-in-right me-1"></i>Sign In
-                        </a>
-                    </li>
                 <?php endif; ?>
             </ul>
         </div>
@@ -45,23 +39,20 @@
 </nav>
 
 <div class="container d-flex align-items-center justify-content-center" style="min-height: 70vh;">
-    <div class="card border rounded-4 p-5 text-center <?= $success ? '' : 'border-danger' ?>" style="max-width: 520px;">
+    <div class="card border rounded-4 p-5 text-center" style="max-width: 520px;">
         <?php if ($success): ?>
-            <div class="display-1 text-success mb-3">✓</div>
-            <h1 class="h3 fw-normal mb-3">Booking Confirmed!</h1>
-            <p class="text-secondary mb-4">Your weekly lesson on <strong><?= htmlspecialchars($date) ?></strong><br>at <strong><?= htmlspecialchars($time) ?></strong> has been booked.</p>
+            <div class="display-1 text-success mb-3">✅</div>
+            <h1 class="h3 fw-normal mb-3">Booking Cancelled</h1>
+            <p class="text-secondary mb-4">Your lesson has been successfully cancelled and the slot is now available for others to book.</p>
             <div class="d-flex gap-2 justify-content-center">
-                <a href="bookingspage.php" class="btn btn-dark">View My Bookings</a>
-                <a href="availability.php?teacher_email=<?= urlencode($teacher_email) ?>" class="btn btn-outline-dark">Back to Availability</a>
+                <a href="bookingspage.php" class="btn btn-dark">Back to My Bookings</a>
+                <a href="teacherlist.php" class="btn btn-outline-dark">Find a Tutor</a>
             </div>
         <?php else: ?>
-            <div class="display-1 text-danger mb-3">✗</div>
-            <h1 class="h3 fw-normal mb-3">Booking Failed</h1>
-            <p class="text-secondary mb-4"><?= htmlspecialchars($error_message ?: 'Sorry, that weekly slot is no longer available.') ?></p>
-            <div class="d-flex gap-2 justify-content-center">
-                <a href="availability.php?teacher_email=<?= urlencode($teacher_email) ?>" class="btn btn-dark">Back to Availability</a>
-                <a href="teacherlist.php" class="btn btn-outline-dark">Find Another Teacher</a>
-            </div>
+            <div class="display-1 text-danger mb-3">❌</div>
+            <h1 class="h3 fw-normal mb-3">Cancellation Failed</h1>
+            <p class="text-secondary mb-4"><?= htmlspecialchars($error_message) ?></p>
+            <a href="bookingspage.php" class="btn btn-dark">Back to My Bookings</a>
         <?php endif; ?>
     </div>
 </div>
