@@ -1,14 +1,10 @@
-<?php 
-class ParentModel{
-    private $email_address; 
-    private $parent_type; 
+<?php
 
-    function __get($name){
-        return $this->$name;
-    }
+class Parent_ {
+    public $email_address;
+    public $parent_type;
 
-    function __set($name, $value){
-        $this->$name = $value;
-    }
+
 }
+
 ?>

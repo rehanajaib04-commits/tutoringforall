@@ -1,14 +1,10 @@
-<?php 
-class Student{
-    private $email_address; 
-    private $student_type; 
+<?php
 
-    function __get($name){
-        return $this->$name;
-    }
+class Student {
+    public $email_address;
+    public $student_type;
 
-    function __set($name, $value){
-        $this->$name = $value;
-    }
+
 }
+
 ?>

@@ -30,11 +30,19 @@
                     </a>
                 </li>
                 <?php if (isset($_SESSION['email_address'])): ?>
-                    <li class="nav-item">
-                        <a class="nav-link" href="myprofile.php">
-                            <i class="bi bi-person me-1"></i>My Profile
-                        </a>
-                    </li>
+                    <?php if (isset($_SESSION['user_type']) && $_SESSION['user_type'] === 'admin'): ?>
+                        <li class="nav-item">
+                            <a class="nav-link" href="userlist.php">
+                                <i class="bi bi-people me-1"></i>User List
+                            </a>
+                        </li>
+                    <?php else: ?>
+                        <li class="nav-item">
+                            <a class="nav-link" href="myprofile.php">
+                                <i class="bi bi-person me-1"></i>My Profile
+                            </a>
+                        </li>
+                    <?php endif; ?>
                     <li class="nav-item">
                         <span class="user-email d-none d-lg-inline"><?= htmlspecialchars($_SESSION['email_address']) ?></span>
                     </li>
@@ -60,13 +68,17 @@
     </div>
 </nav>
 
-<!-- Secondary Navigation (Updated Links) -->
+<!-- Secondary Navigation -->
 <nav class="navbar navbar-expand bg-light border-bottom py-2">
     <div class="container-fluid">
         <div class="navbar-nav mx-auto">
             <a class="nav-link" href="#featured-tutor">Featured Tutor</a>
             <a class="nav-link" href="teacherlist.php">Search Teacher</a>
-            <a class="nav-link" href="myprofile.php">My Profile</a>
+            <?php if (isset($_SESSION['user_type']) && $_SESSION['user_type'] === 'admin'): ?>
+                <a class="nav-link" href="userlist.php">User List</a>
+            <?php elseif (isset($_SESSION['email_address'])): ?>
+                <a class="nav-link" href="myprofile.php">My Profile</a>
+            <?php endif; ?>
         </div>
     </div>
 </nav>
@@ -80,7 +92,6 @@
 
         <div class="hero-divider"></div>
 
-        <!-- Feature strip -->
         <div class="features-strip d-flex justify-content-center gap-5 flex-wrap">
             <div class="feature-item">
                 <div class="feature-label">Verified Tutors</div>
@@ -95,7 +106,7 @@
     </div>
 </main>
 
-<!-- Featured Tutor Section (Random Tutor) -->
+<!-- Featured Tutor Section -->
 <section id="featured-tutor" class="py-5 bg-white border-top">
     <div class="container" style="max-width: 800px;">
         <h2 class="h4 fw-normal text-center mb-4">Meet a Featured Tutor</h2>
@@ -124,8 +135,6 @@
         <?php endif; ?>
     </div>
 </section>
-
-
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>

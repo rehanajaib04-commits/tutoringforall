@@ -1,23 +1,36 @@
-<?php 
+<?php
 
+class User {
+    public $email_address;
+    public $first_name;
+    public $last_name;
+    public $contact_number;
+    public $user_type;
+    public $password;
+    public $security_question;
+    public $security_answer;
+    public $date_of_birth;   // Added for signup
+    public $gender;          // Added for signup
+    public $ethnicity;       // Added for signup
 
-class User{
-    
-    private $email_address; 
-    private $first_name;
-    private $last_name;
-    private $contact_number;
-    private $user_type;
-    private $password;
-    private $security_question;
-    private $security_answer;
-
-    function __get($name){
-        return $this->$name;
+    // Optional helper methods
+    public function getFullName() {
+        return trim($this->first_name . ' ' . $this->last_name);
     }
 
-    function __set($name, $value){
-        $this->$name = $value;
+    public function isStudent() {
+        return strtolower($this->user_type ?? '') === 'student';
+    }
+
+    public function isParent() {
+        return strtolower($this->user_type ?? '') === 'parent';
+    }
+
+    public function isTeacher() {
+        return strtolower($this->user_type ?? '') === 'teacher';
+    }
+
+    public function isAdmin() {
+        return strtolower($this->user_type ?? '') === 'admin';
     }
 }
-?>

@@ -13,7 +13,7 @@
 
 <nav class="navbar navbar-expand navbar-light">
     <div class="container-fluid px-0">
-        <a href="teacherlist.php" class="navbar-brand">Tutoring For All</a>
+        <a href="homepage.php" class="navbar-brand">Tutoring For All</a>
         <div class="navbar-nav ms-auto">
             <a href="signup.php" class="nav-link">Register</a>
         </div>
@@ -30,6 +30,12 @@
         <?php if (isset($_GET['registered'])): ?>
             <div class="alert alert-success mb-4" role="alert">
                 <i class="bi bi-check-circle me-2"></i>Account created successfully! Please sign in below.
+            </div>
+        <?php endif; ?>
+
+        <?php if (isset($_GET['reset'])): ?>
+            <div class="alert alert-success mb-4" role="alert">
+                <i class="bi bi-check-circle me-2"></i>Password reset successfully! Please sign in with your new password.
             </div>
         <?php endif; ?>
 
@@ -74,6 +80,10 @@
                 <i class="bi bi-box-arrow-in-right me-2"></i>Sign In
             </button>
         </form>
+
+        <div class="register-link">
+            <a href="reset_password.php" class="text-decoration-none small">Forgot your password?</a>
+        </div>
 
         <div class="register-link">
             Don't have an account? <a href="signup.php">Register here</a>

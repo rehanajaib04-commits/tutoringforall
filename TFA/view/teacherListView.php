@@ -13,7 +13,7 @@
 
 <nav class="navbar navbar-expand-lg navbar-light">
     <div class="container-fluid px-0">
-        <a href="myprofile.php" class="navbar-brand">Tutoring For All</a>
+        <a href="homepage.php" class="navbar-brand">Tutoring For All</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -77,7 +77,8 @@
                 <thead>
                     <tr>
                         <th>Teacher Name</th>
-                        <th>Subject</th>
+                        <th>Teacher Type</th>
+                        <th class="text-center">Rating</th>
                         <th class="text-end">Action</th>
                     </tr>
                 </thead>
@@ -90,6 +91,16 @@
                                 </a>
                             </td>
                             <td><?= htmlspecialchars($teacher->teacher_type ?? 'N/A') ?></td>
+                            <td class="text-center">
+                                <?php if (($teacher->rating ?? 0) > 0): ?>
+                                    <span class="rating-badge">
+                                        <?= number_format($teacher->rating, 1) ?>/10
+                                        <small class="text-muted">(<?= $teacher->total_reviews ?? 0 ?>)</small>
+                                    </span>
+                                <?php else: ?>
+                                    <span class="text-muted">-</span>
+                                <?php endif; ?>
+                            </td>
                             <td class="text-end">
                                 <a href="teacherProfile.php?id=<?= urlencode($teacher->email_address) ?>" class="btn btn-sm btn-outline-dark">
                                     View Profile

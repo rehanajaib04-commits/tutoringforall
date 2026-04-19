@@ -12,7 +12,7 @@
 
 <nav class="navbar navbar-expand-lg navbar-light">
     <div class="container-fluid px-0">
-        <a href="teacherlist.php" class="navbar-brand">Tutoring For All</a>
+        <a href="homepage.php" class="navbar-brand">Tutoring For All</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>
         </button>

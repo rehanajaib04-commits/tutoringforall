@@ -11,7 +11,7 @@
 
 <nav class="navbar navbar-expand-lg navbar-light">
     <div class="container-fluid px-0">
-        <a href="teacherlist.php" class="navbar-brand">Tutoring For All</a>
+        <a href="homepage.php" class="navbar-brand">Tutoring For All</a>
         <div class="navbar-nav ms-auto">
             <a href="sign_in.php" class="nav-link">Sign In</a>
         </div>

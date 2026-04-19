@@ -15,7 +15,7 @@
 
 <nav class="navbar navbar-expand-lg navbar-light">
     <div class="container-fluid px-0">
-        <a href="adminDashboard.php" class="navbar-brand">Tutoring For All Admin</a>
+        <a href="homepage.php" class="navbar-brand">Tutoring For All Admin</a>
         <div class="navbar-nav ms-auto">
             <a href="logout.php" class="nav-link">Sign Out</a>
         </div>

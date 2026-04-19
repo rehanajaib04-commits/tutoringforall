@@ -5,7 +5,14 @@
     <link rel="stylesheet" href="/TFA/css/adminAddUser_view.css">
 </head>
 <body>
-
+<nav class="navbar navbar-expand-lg navbar-light">
+    <div class="container-fluid px-0">
+        <a href="homepage.php" class="navbar-brand">Tutoring For All</a>
+        <div class="navbar-nav ms-auto">
+            <a href="sign_in.php" class="nav-link">Sign In</a>
+        </div>
+    </div>
+</nav>
     <h2>System Administration - Add New User</h2>
 
     <?php if(!empty($error_message)): ?>

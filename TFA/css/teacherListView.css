@@ -1,4 +1,4 @@
-/* Teacher List Page Styles */
+/* Teacher List Page Styles - Clean Table Layout */
 
 .page-header {
     margin-bottom: 2rem;
@@ -25,10 +25,40 @@
     padding: 0.75rem 1.5rem;
 }
 
-.table-hover tbody tr:hover {
+/* Table Styles */
+.table {
+    background: white;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.table th {
+    font-weight: 600;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--secondary-color);
+    background: var(--hover-bg);
+    border-bottom: 2px solid var(--border-color);
+    padding: 1rem 0.75rem;
+}
+
+.table td {
+    padding: 1rem 0.75rem;
+    vertical-align: middle;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.table tbody tr:hover {
     background-color: var(--hover-bg);
 }
 
+.table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Teacher Link */
 .teacher-link {
     color: var(--primary-color);
     text-decoration: none;
@@ -39,10 +69,31 @@
     text-decoration: underline;
 }
 
+/* Rating Badge */
+.rating-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    background: var(--hover-bg);
+    padding: 0.375rem 0.75rem;
+    border-radius: 4px;
+    font-weight: 500;
+    font-size: 0.9375rem;
+}
+
+.rating-badge small {
+    font-size: 0.8rem;
+    font-weight: 400;
+}
+
+/* No Results */
 .no-results {
     text-align: center;
     padding: 3rem;
     color: var(--secondary-color);
+    background: white;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
 }
 
 .no-results i {
@@ -51,6 +102,7 @@
     display: block;
 }
 
+/* Mobile Responsive */
 @media (max-width: 768px) {
     .page-header h1 {
         font-size: 1.5rem;
@@ -58,5 +110,10 @@
 
     .search-form .btn {
         margin-top: 0.5rem;
+    }
+    
+    .table th,
+    .table td {
+        padding: 0.75rem 0.5rem;
     }
 }
