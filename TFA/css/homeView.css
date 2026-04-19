@@ -1,0 +1,99 @@
+/* Home Page Specific Styles */
+
+/* Hero Section */
+.hero-section {
+    padding: 4rem 1rem;
+}
+
+.hero-title {
+    font-size: clamp(3rem, 10vw, 7rem);
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    color: var(--primary-color);
+    line-height: 1;
+    margin-bottom: 1.25rem;
+}
+
+.hero-subtitle {
+    font-size: 1.15rem;
+    color: var(--secondary-color);
+    max-width: 420px;
+    line-height: 1.6;
+}
+
+.hero-cta {
+    display: inline-block;
+    padding: 0.85rem 2.5rem;
+    background-color: var(--primary-color);
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 500;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    transition: background-color 0.2s ease, transform 0.15s ease;
+    border: 2px solid var(--primary-color);
+}
+
+.hero-cta:hover {
+    background-color: #555;
+    border-color: #555;
+    color: #fff;
+    transform: translateY(-1px);
+}
+
+.hero-divider {
+    width: 48px;
+    height: 2px;
+    background-color: var(--border-color);
+    margin: 2.5rem auto;
+}
+
+/* Feature Strip */
+.features-strip {
+    padding: 0 1rem 2rem;
+}
+
+.feature-item {
+    text-align: center;
+    max-width: 160px;
+}
+
+.feature-label {
+    font-size: 0.85rem;
+    color: #555;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Footer */
+.site-footer {
+    border-top: 1px solid var(--border-color);
+    padding: 1.5rem 2rem;
+    font-size: 0.875rem;
+    background-color: white;
+}
+
+/* Avatar in featured tutor */
+.profile-avatar {
+    transition: transform 0.2s ease;
+}
+.card {
+    transition: box-shadow 0.2s ease;
+}
+.card:hover {
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+.card:hover .profile-avatar {
+    transform: scale(1.02);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .hero-title {
+        font-size: 3rem;
+    }
+    .hero-subtitle {
+        font-size: 1rem;
+    }
+}

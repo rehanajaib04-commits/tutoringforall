@@ -1,29 +1,71 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Booking Confirmation</title>
-    <style>
-        body { font-family: 'Segoe UI', sans-serif; text-align: center; padding: 50px; }
-        .message-box { border: 1px solid #ccc; padding: 30px; display: inline-block; border-radius: 8px; }
-        .success { color: green; }
-        .error { color: red; }
-        .btn { display: inline-block; margin-top: 20px; padding: 10px 20px; text-decoration: none; border: 1px solid #333; color: #333; }
-    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Confirmation - Tutoring For All</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="../css/common.css">
 </head>
 <body>
 
-    <div class="message-box">
-        <?php if ($success): ?>
-            <h1 class="success">Booking Confirmed!</h1>
-            <p>Your lesson for <strong><?= htmlspecialchars($date) ?></strong> at <strong><?= htmlspecialchars($time) ?></strong> has been scheduled.</p>
-        <?php else: ?>
-            <h1 class="error">Booking Failed</h1>
-            <p>We're sorry, that slot may have just been taken or is no longer available.</p>
-        <?php endif; ?>
-
-        <a href="bookingspage.php?teacher_id=<?= $teacher_id ?>" class="btn">Back to Availability</a>
-        <a href="dashboard.php" class="btn">Go to My Lessons</a>
+<nav class="navbar navbar-expand-lg navbar-light">
+    <div class="container-fluid px-0">
+        <a href="homepage.php" class="navbar-brand">Tutoring For All</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+            <ul class="navbar-nav align-items-center">
+                <?php if (isset($_SESSION['email_address'])): ?>
+                    <li class="nav-item">
+                        <span class="user-email d-none d-lg-inline"><?= htmlspecialchars($_SESSION['email_address']) ?></span>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="bookingspage.php">
+                            <i class="bi bi-calendar-check me-1"></i>My Bookings
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="logout.php">
+                            <i class="bi bi-box-arrow-right me-1"></i>Sign Out
+                        </a>
+                    </li>
+                <?php else: ?>
+                    <li class="nav-item">
+                        <a class="nav-link" href="sign_in.php">
+                            <i class="bi bi-box-arrow-in-right me-1"></i>Sign In
+                        </a>
+                    </li>
+                <?php endif; ?>
+            </ul>
+        </div>
     </div>
+</nav>
 
+<div class="container d-flex align-items-center justify-content-center" style="min-height: 70vh;">
+    <div class="card border rounded-4 p-5 text-center <?= $success ? '' : 'border-danger' ?>" style="max-width: 520px;">
+        <?php if ($success): ?>
+            <div class="display-1 text-success mb-3">✓</div>
+            <h1 class="h3 fw-normal mb-3">Booking Confirmed!</h1>
+            <p class="text-secondary mb-4">Your weekly lesson on <strong><?= htmlspecialchars($date) ?></strong><br>at <strong><?= htmlspecialchars($time) ?></strong> has been booked.</p>
+            <div class="d-flex gap-2 justify-content-center">
+                <a href="bookingspage.php" class="btn btn-dark">View My Bookings</a>
+                <a href="availability.php?teacher_email=<?= urlencode($teacher_email) ?>" class="btn btn-outline-dark">Back to Availability</a>
+            </div>
+        <?php else: ?>
+            <div class="display-1 text-danger mb-3">✗</div>
+            <h1 class="h3 fw-normal mb-3">Booking Failed</h1>
+            <p class="text-secondary mb-4"><?= htmlspecialchars($error_message ?: 'Sorry, that weekly slot is no longer available.') ?></p>
+            <div class="d-flex gap-2 justify-content-center">
+                <a href="availability.php?teacher_email=<?= urlencode($teacher_email) ?>" class="btn btn-dark">Back to Availability</a>
+                <a href="teacherlist.php" class="btn btn-outline-dark">Find Another Teacher</a>
+            </div>
+        <?php endif; ?>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

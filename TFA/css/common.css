@@ -1,0 +1,188 @@
+/* Tutoring For All - Common Styles */
+/* Base Bootstrap 5.3.3 Overrides */
+
+:root {
+    --primary-color: #212529;
+    --secondary-color: #6c757d;
+    --border-color: #dee2e6;
+    --hover-bg: #f8f9fa;
+    --success-color: #198754;
+    --danger-color: #dc3545;
+    --body-bg: #ffffff;
+}
+
+body {
+    font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    background-color: var(--body-bg);
+    color: #333;
+    min-height: 100vh;
+}
+
+/* Navbar Styles */
+.navbar {
+    border-bottom: 2px solid var(--primary-color);
+    padding: 1rem 2rem;
+    background-color: white;
+}
+
+.navbar-brand {
+    font-size: 1.5rem;
+    font-weight: 500;
+    color: var(--primary-color) !important;
+    text-decoration: none;
+    letter-spacing: -0.5px;
+}
+
+.navbar-brand:hover {
+    opacity: 0.8;
+}
+
+.nav-link {
+    color: var(--primary-color) !important;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    padding: 0.5rem 1rem !important;
+    margin-left: 0.5rem;
+    transition: all 0.2s;
+}
+
+.nav-link:hover {
+    border-color: var(--border-color);
+    background-color: var(--hover-bg);
+}
+
+.nav-link.active {
+    background-color: var(--primary-color);
+    color: white !important;
+    border-color: var(--primary-color);
+}
+
+.user-email {
+    color: var(--secondary-color);
+    font-size: 0.9rem;
+    margin-right: 1rem;
+}
+
+/* Button Overrides */
+.btn-dark {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-dark:hover {
+    background-color: #000;
+    border-color: #000;
+}
+
+.btn-outline-dark:hover {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+/* Form Overrides */
+.form-label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--secondary-color);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.5rem;
+}
+
+.form-control {
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 0.625rem 0.875rem;
+}
+
+.form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(33, 37, 41, 0.15);
+}
+
+.form-text {
+    color: var(--secondary-color);
+    font-size: 0.875rem;
+}
+
+/* Alert Overrides */
+.alert {
+    border-radius: 6px;
+    border: none;
+}
+
+.alert-success {
+    background-color: #d1e7dd;
+    color: #0f5132;
+}
+
+.alert-danger {
+    background-color: #f8d7da;
+    color: #842029;
+}
+
+/* Card Styles */
+.card {
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+}
+
+.card-header {
+    background-color: white;
+    border-bottom: 1px solid var(--border-color);
+    font-weight: 600;
+}
+
+/* Table Styles */
+.table th {
+    font-weight: 600;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--secondary-color);
+    border-bottom: 2px solid var(--border-color);
+    padding: 0.75rem;
+}
+
+.table td {
+    padding: 0.875rem 0.75rem;
+    vertical-align: middle;
+    border-bottom: 1px solid var(--border-color);
+}
+
+/* Badge Styles */
+.badge {
+    padding: 0.5em 0.75em;
+    font-weight: 500;
+}
+
+.badge.bg-success-subtle {
+    background-color: #d1e7dd !important;
+    color: #0f5132;
+}
+
+.badge.bg-warning-subtle {
+    background-color: #fff3cd !important;
+    color: #664d03;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .navbar {
+        padding: 0.75rem 1rem;
+    }
+
+    .navbar-collapse {
+        margin-top: 1rem;
+    }
+
+    .nav-link {
+        margin-left: 0;
+        margin-bottom: 0.25rem;
+    }
+
+    .user-email {
+        display: block;
+        margin: 0.5rem 0;
+    }
+}
